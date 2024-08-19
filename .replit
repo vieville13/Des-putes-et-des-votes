@@ -1,0 +1,13 @@
+odules = ["php-8.2"]
+run = "php -S localhost:8000"
+
+[nix]
+channel = "stable-23_11"
+
+[deployment]
+run = ["sh", "-c", "ctrl+enter"]
+
+[[ports]]
+localPort = 8000
+externalPort = 80
+exposeLocalhost = true
