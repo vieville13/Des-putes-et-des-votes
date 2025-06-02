@@ -1,35 +1,44 @@
 <?php
-// Initialiser cURL
-$ch = curl_init();
+require_once __DIR__ . '/controllers/DeputeController.php';
 
-// URL de l'API
-$url = 'https://www.nosdeputes.fr/deputes/xml';
+$controller = new DeputeController();
 
-// Configurer cURL
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+$slug = $_GET['slug'] ?? '';
+$search = $_GET['search'] ?? '';
 
-// Ajouter des en-têtes HTTP si nécessaire
-
-
-// Exécuter la requête cURL
-$response = curl_exec($ch);
-$xml=simplexml_load_string($response);
-// Vérifier si la requête a réussi
-if ($response === FALSE) {
-    die('Erreur : ' . curl_error($ch));
-}
-
-// Fermer la session cURL
-curl_close($ch);
-
-// Traiter la réponse
-$deputes=$xml->xpath('//depute');
-foreach ($deputes as $depute) {
-   if( $depute->nom_de_famille == "Bazin" ) {
-       echo $depute->twitter;
-   }
+if ($slug !== '') {
+    // Affiche la fiche d'un député
+    $controller->show($slug);
+    exit;
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Recherche de députés</title>
+</head>
+<body>
+    <h1>Recherche de députés</h1>
+    <form method="get" action="">
+        <input type="text" name="search" placeholder="Prénom, nom ou slug" value="<?= htmlspecialchars($search) ?>" required>
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <?php if ($search !== ''): ?>
+        <?php $results = $controller->searchDeputes($search); ?>
+        <?php if (count($results) === 0): ?>
+            <p>Aucun député trouvé pour « <?= htmlspecialchars($search) ?> ».</p>
+        <?php else: ?>
+            <ul>
+                <?php foreach ($results as $depute): ?>
+                    <li><a href="?slug=<?= htmlspecialchars($depute->slug) ?>">
+                        <?= htmlspecialchars($depute->prenom . ' ' . $depute->nom) ?>
+                    </a></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    <?php endif; ?>
+</body>
+</html>
