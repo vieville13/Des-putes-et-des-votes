@@ -3,21 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('depute-modal');
     const modalBody = document.getElementById('modal-body');
     const closeModal = document.querySelector('.close');
-    const searchBtn = document.getElementById('search-btn');
-    const searchInput = document.getElementById('search-commune');
-
-    // Gestion des clics sur les circonscriptions
-    document.querySelectorAll('.circonscription-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const code = this.dataset.code;
-            loadCirconscriptionInfo(code);
-        });
-    });
 
     // Fermeture de la modal
-    closeModal.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
 
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
@@ -25,25 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Recherche par commune
-    searchBtn.addEventListener('click', function() {
-        const commune = searchInput.value.trim();
-        if (commune) {
-            searchByCommune(commune);
-        }
-    });
-
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchBtn.click();
-        }
-    });
-
     function loadCirconscriptionInfo(code) {
         modalBody.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p>Chargement...</p></div>';
         modal.style.display = 'block';
 
-        fetch(`controllers/CarteController.php?action=getInfo&code=${encodeURIComponent(code)}`)
+        fetch(`index.php?action=getInfo&code=${encodeURIComponent(code)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -82,24 +60,46 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    function searchByCommune(commune) {
-        modalBody.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p>Recherche en cours...</p></div>';
-        modal.style.display = 'block';
-
-        // Pour l'instant, cette fonctionnalité n'est pas implémentée
-        modalBody.innerHTML = `
-            <div class="no-depute">
-                <h3>🔍 Recherche par commune</h3>
-                <p>Cette fonctionnalité sera bientôt disponible.</p>
-                <p>Vous avez recherché : <strong>${commune}</strong></p>
-                <p>En attendant, naviguez par département ci-dessous.</p>
-            </div>
-        `;
-    }
-
     // Style du spinner
     const style = document.createElement('style');
     style.textContent = `
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3498db;
@@ -114,11 +114,49 @@ document.addEventListener('DOMContentLoaded', function() {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .depute-info {
+            text-align: center;
+        }
+
+        .circonscription-name {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .profession {
+            color: #7f8c8d;
+            font-style: italic;
+            margin: 10px 0;
+        }
+
+        .view-profile {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .view-profile:hover {
+            background: #c0392b;
+        }
+
+        .no-depute {
+            text-align: center;
+            padding: 20px;
+        }
     `;
     document.head.appendChild(style);
 
-    // Initialisation de la carte Leaflet si elle existe
-    if (typeof L !== 'undefined' && typeof circonscriptions !== 'undefined') {
+    // Initialisation de la carte Leaflet
+    if (typeof L !== 'undefined') {
         // Créer la carte
         const map = L.map('map').setView([46.603354, 1.888334], 6);
 
@@ -127,29 +165,65 @@ document.addEventListener('DOMContentLoaded', function() {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Ajouter les circonscriptions
-        circonscriptions.forEach(circo => {
-            if (circo.coordinates && circo.coordinates.length > 0) {
-                // Créer un polygone avec les coordonnées KML
-                const polygon = L.polygon(circo.coordinates, {
-                    color: "#ff7800",
-                    weight: 2,
-                    fillOpacity: 0.3,
-                    fillColor: "#ffaa00"
-                }).addTo(map);
+        // Ajouter les circonscriptions si les données existent
+        if (typeof circonscriptions !== 'undefined' && circonscriptions) {
+            Object.values(circonscriptions).forEach(region => {
+                if (region.circonscriptions) {
+                    region.circonscriptions.forEach(circo => {
+                        if (circo.kml_shape) {
+                            try {
+                                // Parser le KML pour extraire les coordonnées
+                                const parser = new DOMParser();
+                                const xmlDoc = parser.parseFromString(circo.kml_shape, "text/xml");
+                                const coordinates = xmlDoc.getElementsByTagName('coordinates')[0];
+                                
+                                if (coordinates) {
+                                    const coordsText = coordinates.textContent.trim();
+                                    const coordPairs = coordsText.split(' ');
+                                    const latLngs = [];
+                                    
+                                    coordPairs.forEach(pair => {
+                                        const coords = pair.split(',');
+                                        if (coords.length >= 2) {
+                                            const lat = parseFloat(coords[1]);
+                                            const lng = parseFloat(coords[0]);
+                                            if (!isNaN(lat) && !isNaN(lng)) {
+                                                latLngs.push([lat, lng]);
+                                            }
+                                        }
+                                    });
+                                    
+                                    if (latLngs.length > 0) {
+                                        // Créer un polygone
+                                        const polygon = L.polygon(latLngs, {
+                                            color: "#2980b9",
+                                            weight: 2,
+                                            fillOpacity: 0.3,
+                                            fillColor: "#3498db"
+                                        }).addTo(map);
 
-                // Ajouter une popup
-                polygon.bindPopup(`
-                    <strong>Circonscription ${circo.numero}</strong><br>
-                    ${circo.departement}<br>
-                    Code: ${circo.code}
-                `);
+                                        // Ajouter une popup
+                                        polygon.bindPopup(`
+                                            <strong>Circonscription ${circo.numero}</strong><br>
+                                            Département: ${circo.departement}<br>
+                                            Code: ${circo.code_circonscription}
+                                        `);
 
-                // Centrer sur le polygone au clic
-                polygon.on('click', function() {
-                    map.fitBounds(polygon.getBounds());
-                });
-            }
-        });
+                                        // Ajouter un événement de clic
+                                        polygon.on('click', function() {
+                                            loadCirconscriptionInfo(circo.code_circonscription);
+                                        });
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Erreur lors du parsing KML pour la circonscription:', circo.code_circonscription, error);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    } else {
+        console.error('Leaflet n\'est pas chargé');
     }
 });

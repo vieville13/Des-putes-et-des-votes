@@ -10,6 +10,9 @@ class CarteController {
 
     public function showCarte() {
         $regions = $this->carteManager->getAllRegionsWithCirconscriptions();
+        
+        // Debug: afficher le nombre de régions chargées
+        error_log("Régions chargées: " . count($regions));
 
         require __DIR__ . '/../views/carte_view.php';
     }
