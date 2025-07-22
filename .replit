@@ -9,3 +9,15 @@ run = ["sh", "-c", "ctrl+enter"]
 localPort = 8000
 externalPort = 80
 exposeLocalhost = true
+
+[workflows]
+runButton = "Serveur PHP"
+
+[[workflows.workflow]]
+name = "Serveur PHP"
+author = 34354940
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "php -S 0.0.0.0:5000"
