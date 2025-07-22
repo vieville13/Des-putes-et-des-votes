@@ -1,0 +1,273 @@
+
+/* Styles pour la carte de France */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.carte-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.carte-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.carte-header h1 {
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.carte-header p {
+    color: #7f8c8d;
+    font-size: 1.2em;
+}
+
+.carte-controls {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 300px;
+    padding: 12px;
+    border: 2px solid #ecf0f1;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.search-button {
+    padding: 12px 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.search-button:hover {
+    background: #2980b9;
+}
+
+.filter-section {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 10px;
+    border: 2px solid #ecf0f1;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    min-width: 200px;
+}
+
+.carte-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.carte-frame {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    min-height: 600px;
+}
+
+.carte-interactive {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ecf0f1;
+    border-radius: 8px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.carte-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-panel, .results-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-panel h3, .results-panel h3 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.results-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.result-item {
+    padding: 12px;
+    border: 1px solid #ecf0f1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.result-item:hover {
+    background: #f8f9fa;
+    border-color: #3498db;
+}
+
+.result-item strong {
+    color: #2c3e50;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.result-item small {
+    color: #7f8c8d;
+}
+
+.stats-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.stats-section h3 {
+    margin: 0 0 20px 0;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #ecf0f1;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #7f8c8d;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Styles pour les départements sur la carte */
+.departement {
+    fill: #3498db;
+    stroke: #2c3e50;
+    stroke-width: 1;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.departement:hover {
+    fill: #2980b9;
+    stroke-width: 2;
+}
+
+.departement.selected {
+    fill: #e74c3c;
+    stroke: #c0392b;
+    stroke-width: 2;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .carte-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .carte-sidebar {
+        flex-direction: row;
+    }
+    
+    .info-panel, .results-panel {
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .carte-container {
+        padding: 10px;
+    }
+    
+    .carte-sidebar {
+        flex-direction: column;
+    }
+    
+    .search-section {
+        flex-direction: column;
+    }
+    
+    .search-input {
+        min-width: auto;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+    }
+    
+    .filter-select {
+        min-width: auto;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+}
