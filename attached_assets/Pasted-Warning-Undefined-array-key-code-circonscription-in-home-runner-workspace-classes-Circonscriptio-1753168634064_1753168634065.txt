@@ -1,0 +1,71 @@
+Warning: Undefined array key "code_circonscription" in /home/runner/workspace/classes/Circonscription.php on line 15
+
+Warning: Undefined array key "departement" in /home/runner/workspace/classes/Circonscription.php on line 16
+
+Warning: Undefined array key "numero" in /home/runner/workspace/classes/Circonscription.php on line 17
+
+Warning: Undefined array key "communes" in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Deprecated: explode(): Passing null to parameter #2 ($string) of type string is deprecated in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Warning: Undefined array key "kml_shape" in /home/runner/workspace/classes/Circonscription.php on line 19
+
+Warning: Undefined array key "edited_shape" in /home/runner/workspace/classes/Circonscription.php on line 20
+
+Warning: Undefined array key "code_circonscription" in /home/runner/workspace/classes/Circonscription.php on line 15
+
+Warning: Undefined array key "departement" in /home/runner/workspace/classes/Circonscription.php on line 16
+
+Warning: Undefined array key "numero" in /home/runner/workspace/classes/Circonscription.php on line 17
+
+Warning: Undefined array key "communes" in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Deprecated: explode(): Passing null to parameter #2 ($string) of type string is deprecated in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Warning: Undefined array key "kml_shape" in /home/runner/workspace/classes/Circonscription.php on line 19
+
+Warning: Undefined array key "edited_shape" in /home/runner/workspace/classes/Circonscription.php on line 20
+
+Warning: Undefined array key "code_circonscription" in /home/runner/workspace/classes/Circonscription.php on line 15
+
+Warning: Undefined array key "departement" in /home/runner/workspace/classes/Circonscription.php on line 16
+
+Warning: Undefined array key "numero" in /home/runner/workspace/classes/Circonscription.php on line 17
+
+Warning: Undefined array key "communes" in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Deprecated: explode(): Passing null to parameter #2 ($string) of type string is deprecated in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Warning: Undefined array key "kml_shape" in /home/runner/workspace/classes/Circonscription.php on line 19
+
+Warning: Undefined array key "edited_shape" in /home/runner/workspace/classes/Circonscription.php on line 20
+
+Warning: Undefined array key "code_circonscription" in /home/runner/workspace/classes/Circonscription.php on line 15
+
+Warning: Undefined array key "departement" in /home/runner/workspace/classes/Circonscription.php on line 16
+
+Warning: Undefined array key "numero" in /home/runner/workspace/classes/Circonscription.php on line 17
+
+Warning: Undefined array key "communes" in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Deprecated: explode(): Passing null to parameter #2 ($string) of type string is deprecated in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Warning: Undefined array key "kml_shape" in /home/runner/workspace/classes/Circonscription.php on line 19
+
+Warning: Undefined array key "edited_shape" in /home/runner/workspace/classes/Circonscription.php on line 20
+
+Warning: Undefined array key "code_circonscription" in /home/runner/workspace/classes/Circonscription.php on line 15
+
+Warning: Undefined array key "departement" in /home/runner/workspace/classes/Circonscription.php on line 16
+
+Warning: Undefined array key "numero" in /home/runner/workspace/classes/Circonscription.php on line 17
+
+Warning: Undefined array key "communes" in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Deprecated: explode(): Passing null to parameter #2 ($string) of type string is deprecated in /home/runner/workspace/classes/Circonscription.php on line 18
+
+Warning: Undefined array key "kml_shape" in /home/runner/workspace/classes/Circonscription.php on line 19
+
+Warning: Undefined array key "edited_shape" in /home/runner/workspace/classes/Circonscription.php on line 20
+
+Fatal error: Uncaught ValueError: array_combine(): Argument #1 ($keys) and argument #2 ($values) must have the same number of elements in /home/runner/workspace/classes/Circonscription.php:33 Stack trace: #0 /home/runner/workspace/classes/Circonscription.php(33): array_combine(Array, Array) #1 /home/runner/workspace/classes/Circonscription.php(43): Circonscription::loadFromCSV() #2 /home/runner/workspace/classes/CarteManager.php(11): Circonscription::getAll() #3 /home/runner/workspace/controllers/CarteController.php(9): CarteManager->__construct() #4 /home/runner/workspace/index.php(14): CarteController->__construct() #5 {main} thrown in /home/runner/workspace/classes/Circonscription.php on line 33
