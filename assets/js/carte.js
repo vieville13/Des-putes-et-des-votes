@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('depute-modal');
     const modalBody = document.getElementById('modal-body');
@@ -115,9 +116,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
-});
 
-circonscriptions.forEach(circo => {
+    // Initialisation de la carte Leaflet si elle existe
+    if (typeof L !== 'undefined' && typeof circonscriptions !== 'undefined') {
+        // Créer la carte
+        const map = L.map('map').setView([46.603354, 1.888334], 6);
+
+        // Ajouter le fond de carte
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Ajouter les circonscriptions
+        circonscriptions.forEach(circo => {
             if (circo.coordinates && circo.coordinates.length > 0) {
                 // Créer un polygone avec les coordonnées KML
                 const polygon = L.polygon(circo.coordinates, {
@@ -140,4 +151,5 @@ circonscriptions.forEach(circo => {
                 });
             }
         });
+    }
 });
