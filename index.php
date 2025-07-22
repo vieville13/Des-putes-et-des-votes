@@ -1,27 +1,11 @@
 
 <?php
 require_once __DIR__ . '/controllers/DeputeController.php';
-require_once __DIR__ . '/controllers/CarteController.php';
 
 $controller = new DeputeController();
-$carteController = new CarteController();
-$carteController->setDeputeController($controller);
 
 $uid = $_GET['uid'] ?? '';
 $search = $_GET['search'] ?? '';
-$mode = $_GET['mode'] ?? '';
-
-// Gestion des requêtes AJAX pour la carte
-if (isset($_GET['ajax'])) {
-    $carteController->handleAjaxRequest();
-    exit;
-}
-
-// Affichage de la carte
-if ($mode === 'carte') {
-    $carteController->showCarte();
-    exit;
-}
 
 if ($uid !== '') {
     // Affiche la fiche d'un député
@@ -150,18 +134,6 @@ if ($uid !== '') {
     <div class="header">
         <h1>🏛️ Base de données des députés</h1>
         <p>Consultez les informations complètes des députés français</p>
-        <div style="margin-top: 20px;">
-            <a href="?mode=carte" style="
-                display: inline-block;
-                padding: 12px 25px;
-                background: #27ae60;
-                color: white;
-                text-decoration: none;
-                border-radius: 8px;
-                font-weight: 500;
-                margin-right: 10px;
-            ">🗺️ Voir la carte des circonscriptions</a>
-        </div>
     </div>
 
     <form method="get" action="" class="search-form">
