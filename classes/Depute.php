@@ -43,9 +43,21 @@ class Depute {
     }
 
     private function formatLieuNaissance(array $infoNaissance): string {
+        // Gérer le cas où les champs peuvent être des tableaux
         $lieu = $infoNaissance['villeNais'] ?? '';
+        if (is_array($lieu)) {
+            $lieu = isset($lieu['#text']) ? $lieu['#text'] : (is_string($lieu[0]) ? $lieu[0] : '');
+        }
+        
         $dep = $infoNaissance['depNais'] ?? '';
+        if (is_array($dep)) {
+            $dep = isset($dep['#text']) ? $dep['#text'] : (is_string($dep[0]) ? $dep[0] : '');
+        }
+        
         $pays = $infoNaissance['paysNais'] ?? '';
+        if (is_array($pays)) {
+            $pays = isset($pays['#text']) ? $pays['#text'] : (is_string($pays[0]) ? $pays[0] : '');
+        }
         
         if ($lieu && $dep && $pays === 'France') {
             return "$lieu ($dep)";
