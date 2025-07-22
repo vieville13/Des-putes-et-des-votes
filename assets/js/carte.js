@@ -140,4 +140,4 @@ circonscriptions.forEach(circo => {
                 });
             }
         });
-</script>
+});
