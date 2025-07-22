@@ -46,17 +46,35 @@ class Depute {
         // Gérer le cas où les champs peuvent être des tableaux
         $lieu = $infoNaissance['villeNais'] ?? '';
         if (is_array($lieu)) {
-            $lieu = isset($lieu['#text']) ? $lieu['#text'] : (is_string($lieu[0]) ? $lieu[0] : '');
+            if (isset($lieu['#text'])) {
+                $lieu = $lieu['#text'];
+            } elseif (!empty($lieu) && isset($lieu[0]) && is_string($lieu[0])) {
+                $lieu = $lieu[0];
+            } else {
+                $lieu = '';
+            }
         }
         
         $dep = $infoNaissance['depNais'] ?? '';
         if (is_array($dep)) {
-            $dep = isset($dep['#text']) ? $dep['#text'] : (is_string($dep[0]) ? $dep[0] : '');
+            if (isset($dep['#text'])) {
+                $dep = $dep['#text'];
+            } elseif (!empty($dep) && isset($dep[0]) && is_string($dep[0])) {
+                $dep = $dep[0];
+            } else {
+                $dep = '';
+            }
         }
         
         $pays = $infoNaissance['paysNais'] ?? '';
         if (is_array($pays)) {
-            $pays = isset($pays['#text']) ? $pays['#text'] : (is_string($pays[0]) ? $pays[0] : '');
+            if (isset($pays['#text'])) {
+                $pays = $pays['#text'];
+            } elseif (!empty($pays) && isset($pays[0]) && is_string($pays[0])) {
+                $pays = $pays[0];
+            } else {
+                $pays = '';
+            }
         }
         
         if ($lieu && $dep && $pays === 'France') {
