@@ -13,11 +13,11 @@ class Circonscription {
 
     public function __construct($data) {
         $this->code = $data['code_circonscription'] ?? '';
-        $this->departement = $data['departement'] ?? '';
+        $this->departement = $data['department'] ?? '';
         $this->numero = $data['numero'] ?? '';
         $this->communes = !empty($data['communes']) ? explode('-', $data['communes']) : [];
         $this->kmlShape = $data['kml_shape'] ?? '';
-        $this->editedShape = ($data['edited_shape'] ?? 'false') === 'true';
+        $this->editedShape = ($data['simple_form'] ?? 'false') === 'true';
     }
 
     public static function loadFromCSV() {
@@ -119,6 +119,23 @@ class Circonscription {
         return $departements[$this->departement] ?? 'Inconnu';
     }
 
+    public function getLeafletCoordinates() {
+        // Convertit les coordonnées KML en format Leaflet
+        if (empty($this->kmlShape)) return [];
+        
+        // Extraction des coordonnées du KML
+        preg_match_all('/([0-9.-]+),([0-9.-]+)/', $this->kmlShape, $matches);
+        
+        if (count($matches[1]) < 3) return [];
+        
+        $coordinates = [];
+        foreach ($matches[1] as $i => $lng) {
+            $coordinates[] = [floatval($matches[2][$i]), floatval($lng)]; // [lat, lng] pour Leaflet
+        }
+        
+        return $coordinates;
+    }
+    
     public function convertKMLToSVG() {
         // Simplifié : convertit les coordonnées KML en format SVG
         if (empty($this->kmlShape)) return '';

@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/../classes/CarteManager.php';
 
@@ -10,15 +9,28 @@ class CarteController {
     }
 
     public function showCarte() {
-        $regions = $this->carteManager->getAllRegionsWithCirconscriptions();
+        $circonscriptions = Circonscription::getAll();
+
+        $carteData = [];
+        foreach ($circonscriptions as $circo) {
+            $coordinates = $circo->getLeafletCoordinates();
+            $carteData[] = [
+                'code' => $circo->code,
+                'departement' => $circo->getDepartementNom(),
+                'numero' => $circo->numero,
+                'coordinates' => $coordinates,
+                'svgPath' => $circo->convertKMLToSVG()
+            ];
+        }
+
         require __DIR__ . '/../views/carte_view.php';
     }
 
     public function getCirconscriptionInfo($codeCirco) {
         header('Content-Type: application/json');
-        
+
         $result = $this->carteManager->getCirconscriptionWithDepute($codeCirco);
-        
+
         if (!$result) {
             http_response_code(404);
             echo json_encode(['error' => 'Circonscription non trouvée']);

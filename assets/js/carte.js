@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('depute-modal');
     const modalBody = document.getElementById('modal-body');
@@ -109,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
             animation: spin 1s linear infinite;
             margin: 0 auto 20px auto;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -117,4 +116,28 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
 });
+
+circonscriptions.forEach(circo => {
+            if (circo.coordinates && circo.coordinates.length > 0) {
+                // Créer un polygone avec les coordonnées KML
+                const polygon = L.polygon(circo.coordinates, {
+                    color: "#ff7800",
+                    weight: 2,
+                    fillOpacity: 0.3,
+                    fillColor: "#ffaa00"
+                }).addTo(map);
+
+                // Ajouter une popup
+                polygon.bindPopup(`
+                    <strong>Circonscription ${circo.numero}</strong><br>
+                    ${circo.departement}<br>
+                    Code: ${circo.code}
+                `);
+
+                // Centrer sur le polygone au clic
+                polygon.on('click', function() {
+                    map.fitBounds(polygon.getBounds());
+                });
+            }
+        });
 </script>
