@@ -2,7 +2,7 @@
 <?php
 echo "=== ANALYSE DU DÉPUTÉ PA569 ===\n\n";
 
-$file = 'attached_assets/json/acteur/PA569.json';
+$file = 'attached_assets/json/acteur/PA795318.json';
 if (!file_exists($file)) {
     die("❌ Fichier non trouvé : $file\n");
 }
