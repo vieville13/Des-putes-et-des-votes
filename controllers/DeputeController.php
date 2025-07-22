@@ -1,17 +1,29 @@
+
 <?php
 require_once __DIR__ . '/../classes/Depute.php';
 
 class DeputeController {
     private $deputes = [];
+    private $deputesPath;
 
     public function __construct() {
-        $jsonFile = __DIR__ . '/../data/AMO30-legislature-16-composite.json';
-        $data = json_decode(file_get_contents($jsonFile), true);
+        $this->deputesPath = __DIR__ . '/../attached_assets/json/acteur/';
+        $this->loadDeputes();
+    }
 
-        foreach ($data['acteurs'] as $acteur) {
-            if (($acteur['etatCivil']['ident']['qualite'] ?? '') === 'Député') {
-                $depute = new Depute($acteur);
-                $this->deputes[$depute->slug] = $depute;
+    private function loadDeputes() {
+        if (!is_dir($this->deputesPath)) {
+            return;
+        }
+
+        $files = glob($this->deputesPath . '*.json');
+        foreach ($files as $file) {
+            $data = json_decode(file_get_contents($file), true);
+            if (isset($data['acteur'])) {
+                $depute = new Depute($data['acteur']);
+                if ($depute->isValid()) {
+                    $this->deputes[$depute->uid] = $depute;
+                }
             }
         }
     }
@@ -21,21 +33,25 @@ class DeputeController {
         return array_filter($this->deputes, function($depute) use ($query) {
             return str_contains(strtolower($depute->nom), $query)
                 || str_contains(strtolower($depute->prenom), $query)
-                || str_contains(strtolower($depute->slug), $query);
+                || str_contains(strtolower($depute->uid), $query);
         });
     }
 
-    public function show(string $slug): void {
-        $depute = $this->deputes[$slug] ?? null;
+    public function getAll(): array {
+        return $this->deputes;
+    }
+
+    public function getByUid(string $uid): ?Depute {
+        return $this->deputes[$uid] ?? null;
+    }
+
+    public function show(string $uid): void {
+        $depute = $this->getByUid($uid);
         if (!$depute) {
             echo "<p>Député introuvable.</p>";
             return;
         }
 
-        echo "<h1>{$depute->prenom} {$depute->nom}</h1>";
-        echo "<p>Sexe : {$depute->sexe}</p>";
-        echo "<p>Date de naissance : {$depute->date_naissance}</p>";
-        echo "<p>Groupe : {$depute->groupe}</p>";
-        echo "<p><a href='index.php'>← Retour à la recherche</a></p>";
+        require __DIR__ . '/../views/depute_view.php';
     }
 }
