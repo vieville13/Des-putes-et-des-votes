@@ -197,9 +197,9 @@
                                 <?php endif; ?>
                             </div>
                             <div class="mandat-dates">
-                                Depuis le <?= htmlspecialchars($mandat['dateDebut']) ?>
+                                <strong>Début de mandat :</strong> <?= htmlspecialchars($mandat['dateDebut']) ?>
                                 <?php if ($mandat['dateFin']): ?>
-                                    jusqu'au <?= htmlspecialchars($mandat['dateFin']) ?>
+                                    <br><strong>Fin de mandat :</strong> <?= htmlspecialchars($mandat['dateFin']) ?>
                                 <?php endif; ?>
                             </div>
                             <div style="font-size: 0.8em; color: #95a5a6; margin-top: 5px;">
