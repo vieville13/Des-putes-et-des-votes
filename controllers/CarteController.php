@@ -9,19 +9,7 @@ class CarteController {
     }
 
     public function showCarte() {
-        $circonscriptions = Circonscription::getAll();
-
-        $carteData = [];
-        foreach ($circonscriptions as $circo) {
-            $coordinates = $circo->getLeafletCoordinates();
-            $carteData[] = [
-                'code' => $circo->code,
-                'departement' => $circo->getDepartementNom(),
-                'numero' => $circo->numero,
-                'coordinates' => $coordinates,
-                'svgPath' => $circo->convertKMLToSVG()
-            ];
-        }
+        $regions = $this->carteManager->getAllRegionsWithCirconscriptions();
 
         require __DIR__ . '/../views/carte_view.php';
     }
