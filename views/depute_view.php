@@ -181,6 +181,48 @@
             <?php endif; ?>
         </div>
 
+        <!-- Affiliations politiques -->
+        <div class="card">
+            <h2>🎯 Affiliations politiques</h2>
+            <?php 
+            $partiPolitique = null;
+            $groupeParlementaire = null;
+            
+            foreach ($depute->mandats as $mandat) {
+                if ($mandat['type'] === 'PARPOL' && !$mandat['dateFin']) {
+                    $partiPolitique = $mandat;
+                }
+                if ($mandat['type'] === 'GP' && !$mandat['dateFin']) {
+                    $groupeParlementaire = $mandat;
+                }
+            }
+            ?>
+            
+            <?php if ($partiPolitique): ?>
+            <div class="info-row">
+                <div class="info-label">Parti politique :</div>
+                <div class="info-value">
+                    <strong><?= htmlspecialchars($partiPolitique['qualite']) ?></strong>
+                    <span class="badge">Actif</span>
+                </div>
+            </div>
+            <?php endif; ?>
+            
+            <?php if ($groupeParlementaire): ?>
+            <div class="info-row">
+                <div class="info-label">Groupe parlementaire :</div>
+                <div class="info-value">
+                    <strong><?= htmlspecialchars($groupeParlementaire['qualite']) ?></strong>
+                    <span class="badge">Actif</span>
+                </div>
+            </div>
+            <?php endif; ?>
+            
+            <?php if (!$partiPolitique && !$groupeParlementaire): ?>
+                <p style="color: #7f8c8d; font-style: italic;">Aucune affiliation politique active trouvée</p>
+            <?php endif; ?>
+        </div>
+
         <!-- Mandats -->
         <div class="card">
             <h2>🏛️ Mandats</h2>

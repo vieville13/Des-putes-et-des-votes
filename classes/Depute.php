@@ -108,11 +108,23 @@ class Depute {
             if (isset($mandat['typeOrgane'])) {
                 // Gérer le cas où organes peut être un tableau ou une chaîne
                 $organe = '';
+                $organeRef = '';
                 if (isset($mandat['organes']['organeRef'])) {
                     if (is_array($mandat['organes']['organeRef'])) {
                         $organe = implode(', ', $mandat['organes']['organeRef']);
+                        $organeRef = $mandat['organes']['organeRef'][0];
                     } else {
                         $organe = $mandat['organes']['organeRef'];
+                        $organeRef = $mandat['organes']['organeRef'];
+                    }
+                }
+                
+                // Pour les partis politiques et groupes parlementaires, essayer de récupérer le nom complet
+                $qualiteAffichage = $mandat['infosQualite']['libQualite'] ?? '';
+                if (($mandat['typeOrgane'] === 'PARPOL' || $mandat['typeOrgane'] === 'GP') && $organeRef) {
+                    $nomOrgane = $this->getOrganeLibelle($organeRef);
+                    if ($nomOrgane) {
+                        $qualiteAffichage = $nomOrgane;
                     }
                 }
                 
@@ -120,11 +132,26 @@ class Depute {
                     'type' => $mandat['typeOrgane'],
                     'dateDebut' => $mandat['dateDebut'] ?? '',
                     'dateFin' => $mandat['dateFin'] ?? null,
-                    'qualite' => $mandat['infosQualite']['libQualite'] ?? '',
-                    'organe' => $organe
+                    'qualite' => $qualiteAffichage,
+                    'organe' => $organe,
+                    'organeRef' => $organeRef
                 ];
             }
         }
+    }
+
+    private function getOrganeLibelle(string $organeRef): ?string {
+        $organePath = __DIR__ . '/../attached_assets/json/organe/' . $organeRef . '.json';
+        if (file_exists($organePath)) {
+            $organeData = json_decode(file_get_contents($organePath), true);
+            if (isset($organeData['organe']['libelleAbrev'])) {
+                return $organeData['organe']['libelleAbrev'];
+            }
+            if (isset($organeData['organe']['libelle'])) {
+                return $organeData['organe']['libelle'];
+            }
+        }
+        return null;
     }
 
     private function loadCollaborateurs(array $collaborateurs): void {
