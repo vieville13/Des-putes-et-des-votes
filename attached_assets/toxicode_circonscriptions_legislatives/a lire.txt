@@ -1,0 +1,37 @@
+CONTOURS DES CIRCONSCRIPTIONS LEGISLATIVES
+Version 1.0.0
+Publié le 18/06/2012 par Toxicode http://www.toxicode.fr/circonscriptions
+Sous licence ODbL : http://opendatacommons.org/licenses/odbl/
+
+
+Pour construire ces données, nous avons utilisé ces deux sources :
+  - Les contours de communes fournis par l'IGN / GEOFLA :
+    http://professionnels.ign.fr/ficheProduitCMS.do?idDoc=6185461
+  - Les correspondances entre circonscriptions et communes, fournies par le Ministère de l'intérieur :
+    http://www.data.gouv.fr/donnees/view/Table-de-correspondance-des-communes-et-des-cantons-avec-les-circonscriptions-l%C3%A9gislat-551418
+    
+Le contour d'une circonscription a été généré à partir des polygones des communes (fournis par GEOFLA), en collant ceux dont les frontières se touchent.
+Dans une petite majorité des cas, cela suffit.
+
+Pour 237 circonscriptions, nous avons dû compléter et éditer manuellement les contours obtenus :
+  - Dans l'immense majorité de ces 237 cas, cet ajustement vient du fait qu'une commune peut être découpée en plusieurs circonscriptions, les données du ministère affectent donc cette commune à plusieurs circonscriptions, et les lignes de séparation ne sont pas dans GEOFLA.
+  - Dans quelques rares autres cas, nous avons dû intervenir pour réparer des problèmes d'enclaves ou de fusion de communes.
+
+Pour ce qui est de la précision des découpages de Toxicode :
+  - Pour la ville de Paris, la carte est précise à la rue près
+  - Pour le reste des circonscriptions, c'est très variable, il peut y avoir jusque 100 mètres d'erreur. Globalement cela reste d'un niveau de détail comparable à la précision des découpages GEOFLA
+  
+Il nous manque les contours de certains territoires d'outre-mer, et les contours sont vides pour les circonscription des français à l'étranger.
+
+
+Format des données :
+l'export est en CSV, avec successivement :
+
+  - code_circonscription : le code du département + le numéro de la circoncription,  ex : 69002
+  - departement : la code du département, ex : 69
+  - numero : le numéro de circonscription, ex : 2,
+  - communes : codes INSEE des communes qui sont (entièrement ou partiellement) dans la circonscription, séparés par le caractère '-'. ex : 69382-69381-69384-69389
+  - kml_shape : polygone(s) de la circonscription, au format KML
+  - edited_shape : 'false' si le contour est simplement un regroupement des contours de communes. 'true' si nous l'avons édité.
+  
+  
