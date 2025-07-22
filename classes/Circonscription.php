@@ -12,31 +12,69 @@ class Circonscription {
     private static $loaded = false;
 
     public function __construct($data) {
-        $this->code = $data['code_circonscription'];
-        $this->departement = $data['departement'];
-        $this->numero = $data['numero'];
-        $this->communes = explode('-', $data['communes']);
-        $this->kmlShape = $data['kml_shape'];
-        $this->editedShape = $data['edited_shape'] === 'true';
+        $this->code = $data['code_circonscription'] ?? '';
+        $this->departement = $data['departement'] ?? '';
+        $this->numero = $data['numero'] ?? '';
+        $this->communes = !empty($data['communes']) ? explode('-', $data['communes']) : [];
+        $this->kmlShape = $data['kml_shape'] ?? '';
+        $this->editedShape = ($data['edited_shape'] ?? 'false') === 'true';
     }
 
     public static function loadFromCSV() {
         if (self::$loaded) return;
         
         $csvFile = __DIR__ . '/../data/circonscriptions.csv';
-        if (!file_exists($csvFile)) return;
+        if (!file_exists($csvFile)) {
+            error_log("Fichier CSV circonscriptions introuvable : " . $csvFile);
+            self::$loaded = true;
+            return;
+        }
         
         $handle = fopen($csvFile, 'r');
-        $headers = fgetcsv($handle);
+        if (!$handle) {
+            error_log("Impossible d'ouvrir le fichier CSV");
+            self::$loaded = true;
+            return;
+        }
         
+        $headers = fgetcsv($handle);
+        if (!$headers) {
+            error_log("Impossible de lire les en-têtes du CSV");
+            fclose($handle);
+            self::$loaded = true;
+            return;
+        }
+        
+        // Debug : afficher les en-têtes
+        error_log("En-têtes CSV trouvés : " . implode(', ', $headers));
+        
+        $lineNumber = 1;
         while (($row = fgetcsv($handle)) !== FALSE) {
+            $lineNumber++;
+            
+            // Vérifier que le nombre de colonnes correspond
+            if (count($headers) !== count($row)) {
+                error_log("Ligne $lineNumber : nombre de colonnes incorrect (" . count($row) . " vs " . count($headers) . ")");
+                continue;
+            }
+            
             $data = array_combine($headers, $row);
-            $circo = new self($data);
-            self::$circonscriptions[$circo->code] = $circo;
+            if ($data === false) {
+                error_log("Erreur lors de la combinaison des données ligne $lineNumber");
+                continue;
+            }
+            
+            // Créer une circonscription seulement si nous avons les données minimales
+            if (!empty($data['code_circonscription'] ?? '')) {
+                $circo = new self($data);
+                self::$circonscriptions[$circo->code] = $circo;
+            }
         }
         
         fclose($handle);
         self::$loaded = true;
+        
+        error_log("Circonscriptions chargées : " . count(self::$circonscriptions));
     }
 
     public static function getAll() {
@@ -83,7 +121,6 @@ class Circonscription {
 
     public function convertKMLToSVG() {
         // Simplifié : convertit les coordonnées KML en format SVG
-        // Dans un cas réel, il faudrait une vraie conversion géospatiale
         if (empty($this->kmlShape)) return '';
         
         // Extraction basique des coordonnées du KML
@@ -96,6 +133,9 @@ class Circonscription {
         $maxLng = max($matches[1]);
         $minLat = min($matches[2]);
         $maxLat = max($matches[2]);
+        
+        // Éviter la division par zéro
+        if ($maxLng == $minLng || $maxLat == $minLat) return '';
         
         // Normalisation pour SVG (0-1000)
         foreach ($matches[1] as $i => $lng) {
