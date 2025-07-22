@@ -76,12 +76,22 @@ class Depute {
         
         foreach ($mandats as $mandat) {
             if (isset($mandat['typeOrgane'])) {
+                // Gérer le cas où organes peut être un tableau ou une chaîne
+                $organe = '';
+                if (isset($mandat['organes']['organeRef'])) {
+                    if (is_array($mandat['organes']['organeRef'])) {
+                        $organe = implode(', ', $mandat['organes']['organeRef']);
+                    } else {
+                        $organe = $mandat['organes']['organeRef'];
+                    }
+                }
+                
                 $this->mandats[] = [
                     'type' => $mandat['typeOrgane'],
                     'dateDebut' => $mandat['dateDebut'] ?? '',
                     'dateFin' => $mandat['dateFin'] ?? null,
                     'qualite' => $mandat['infosQualite']['libQualite'] ?? '',
-                    'organe' => $mandat['organes']['organeRef'] ?? ''
+                    'organe' => $organe
                 ];
             }
         }
